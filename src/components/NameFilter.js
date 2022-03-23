@@ -3,9 +3,9 @@ import StarWarsContext from '../context/StarWarsContext';
 import useInput from '../hooks/useInput';
 
 function NameFilter() {
-  // const [filter, setFilter] = useState;
   const { filterByName } = useContext(StarWarsContext);
-  const [name, nameInput] = useInput({ type: 'text', list: null, testid: 'name-filter' });
+  const [name, nameInput] = useInput({
+    type: 'text', list: null, testid: 'name-filter', initial: '' });
   useEffect(() => { filterByName(name); }, [filterByName, name]);
   return (
     <form>

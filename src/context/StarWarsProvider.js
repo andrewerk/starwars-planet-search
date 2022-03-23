@@ -9,6 +9,7 @@ class StarWarsProvider extends React.Component {
       name: '',
     },
     filteredData: [],
+    filterByNumericValues: [],
   }
 
   getData = async () => {
@@ -29,6 +30,69 @@ class StarWarsProvider extends React.Component {
     }
   }
 
+  // changeNumericFilter = (type, { column, comparison, value }) => {
+  //   if (type === 'add') {
+  //     this.setState((prevState) => ({
+  //       ...prevState,
+  //       filterByNumericValues:
+  //       [
+  //         ...prevState.filterByNumericValues,
+  //         {
+  //           column,
+  //           comparison,
+  //           value,
+  //         },
+  //       ],
+  //     }
+  //     ));
+  //   }
+  // }
+
+  applyNumericFilter = (type, { column, comparison, value }) => {
+    if (type === 'add') {
+      this.setState((prevState) => ({
+        ...prevState,
+        filterByNumericValues:
+        [
+          ...prevState.filterByNumericValues,
+          {
+            column,
+            comparison,
+            value,
+          },
+        ],
+      }), () => {
+        const { filterByName: name, filterByNumericValues } = this.state;
+        if (filterByNumericValues.length > 0) {
+          this.filterByName(name);
+          const { filteredData } = this.state;
+          if (comparison === 'maior que') {
+            const newFilteredData = filteredData.filter(
+              (planet) => filterByNumericValues.every((filter) => (
+                filter.value < Number(planet[column])
+              )),
+            );
+            this.setState({ filteredData: newFilteredData });
+          } else if (comparison === 'igual a') {
+            const newFilteredData = filteredData.filter(
+              (planet) => filterByNumericValues.every((filter) => (
+                Number(filter.value) === Number(planet[column])
+              )),
+            );
+            this.setState({ filteredData: newFilteredData });
+          } else if (comparison === 'menor que') {
+            const newFilteredData = filteredData.filter(
+              (planet) => filterByNumericValues.every((filter) => (
+                filter.value > Number(planet[column])
+              )),
+            );
+            this.setState({ filteredData: newFilteredData });
+          }
+        }
+      });
+    }
+  }
+
   render() {
     const { children } = this.props;
     return (
@@ -36,7 +100,9 @@ class StarWarsProvider extends React.Component {
         value={ {
           ...this.state,
           getData: this.getData,
-          filterByName: this.filterByName } }
+          filterByName: this.filterByName,
+          changeNumericFilter: this.changeNumericFilter,
+          applyNumericFilter: this.applyNumericFilter } }
       >
         { children }
       </StarWarsContext.Provider>

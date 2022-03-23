@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 
 // Code adapted from https://stackoverflow.com/questions/55757761/handle-an-input-with-react-hooks
 
-function useInput({ type, list, testid }) {
-  const [value, setValue] = useState('');
-  if (type === 'text') {
+function useInput({ type, list, testid, initial }) {
+  const [value, setValue] = useState(initial);
+  if (type === 'text' || type === 'number') {
     const input = (<input
       value={ value }
       onChange={ ({ target }) => setValue(target.value) }
