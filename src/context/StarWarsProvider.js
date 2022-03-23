@@ -5,6 +5,9 @@ import StarWarsContext from './StarWarsContext';
 class StarWarsProvider extends React.Component {
   state = {
     data: [],
+    filterByName: {
+      name: '',
+    },
     filteredData: [],
   }
 
@@ -16,6 +19,7 @@ class StarWarsProvider extends React.Component {
   };
 
   filterByName = (text) => {
+    this.setState({ filterByName: { name: text } });
     const { data } = this.state;
     const newData = data.filter(({ name }) => name.includes(text));
     if (text !== '') {
