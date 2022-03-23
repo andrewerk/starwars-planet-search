@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import StarWarsContext from '../context/StarWarsContext';
 
 function Table() {
-  const { data, getData } = useContext(StarWarsContext);
+  const { filteredData, data, getData } = useContext(StarWarsContext);
   useEffect(() => { getData(); }, [getData]);
 
   return (
@@ -25,7 +25,7 @@ function Table() {
         </tr>
       </thead>
       <tbody>
-        {data && data.map((planet) => (
+        {data && filteredData.map((planet) => (
           <tr key={ planet.name }>
             <td>{ planet.name }</td>
             <td>{ planet.rotation_period }</td>
