@@ -21,8 +21,9 @@ class StarWarsProvider extends React.Component {
 
   filterByName = (text) => {
     this.setState({ filterByName: { name: text } });
-    const { data } = this.state;
-    const newData = data.filter(({ name }) => name.includes(text));
+    const { data, filteredData, filterByNumericValues } = this.state;
+    const newData = (filterByNumericValues
+      ? filteredData : data).filter(({ name }) => name.includes(text));
     if (text !== '') {
       this.setState({ filteredData: newData });
     } else {
@@ -64,30 +65,20 @@ class StarWarsProvider extends React.Component {
       }), () => {
         const { filterByName: name, filterByNumericValues } = this.state;
         if (filterByNumericValues.length > 0) {
-          this.filterByName(name);
           const { filteredData } = this.state;
-          if (comparison === 'maior que') {
-            const newFilteredData = filteredData.filter(
-              (planet) => filterByNumericValues.every((filter) => (
-                filter.value < Number(planet[column])
-              )),
-            );
-            this.setState({ filteredData: newFilteredData });
-          } else if (comparison === 'igual a') {
-            const newFilteredData = filteredData.filter(
-              (planet) => filterByNumericValues.every((filter) => (
-                Number(filter.value) === Number(planet[column])
-              )),
-            );
-            this.setState({ filteredData: newFilteredData });
-          } else if (comparison === 'menor que') {
-            const newFilteredData = filteredData.filter(
-              (planet) => filterByNumericValues.every((filter) => (
-                filter.value > Number(planet[column])
-              )),
-            );
-            this.setState({ filteredData: newFilteredData });
-          }
+          const newfilteredData = filteredData.filter((planet) => filterByNumericValues
+            .every((filter) => {
+              if ((filter.comparison === 'maior que'
+              && filter.value < Number(planet[filter.column]))
+              || (filter.comparison === 'menor que'
+              && filter.value > Number(planet[filter.column]))
+              || (filter.comparison === 'igual a'
+              && Number(filter.value) === Number(planet[filter.column]))) {
+                return true;
+              }
+              return false;
+            }));
+          this.setState({ filteredData: newfilteredData }, this.filterByName(name));
         }
       });
     }
