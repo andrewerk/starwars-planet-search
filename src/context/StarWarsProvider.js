@@ -50,6 +50,13 @@ function StarWarsProvider({ children }) {
     }
   }, [data, filterByNumericValues]);
 
+  const removeFilter = (filterToDelete) => {
+    const newNumericFilter = filterByNumericValues.filter((filter) => (
+      filterToDelete !== filter
+    ));
+    setFilterByNumericValues(newNumericFilter);
+  };
+
   return (
     <StarWarsContext.Provider
       value={ {
@@ -58,6 +65,7 @@ function StarWarsProvider({ children }) {
         setFilterByName,
         filterByNumericValues,
         setFilterByNumericValues,
+        removeFilter,
 
       } }
     >
