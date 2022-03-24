@@ -3,15 +3,15 @@ import StarWarsContext from '../context/StarWarsContext';
 import useInput from '../hooks/useInput';
 
 function NumericFilter() {
-  // const [filter, setFilter] = useState;
-  const { applyNumericFilter } = useContext(StarWarsContext);
+  const { applyNumericFilter, filterByNumericValues } = useContext(StarWarsContext);
   const options = [
     'population',
     'orbital_period',
     'diameter',
     'rotation_period',
     'surface_water',
-  ];
+  ].filter((option) => !filterByNumericValues.find((item) => option === item.column));
+
   const relationalOptions = [
     'maior que',
     'igual a',
