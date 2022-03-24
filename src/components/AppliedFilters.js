@@ -3,17 +3,12 @@ import StarWarsContext from '../context/StarWarsContext';
 import useInput from '../hooks/useInput';
 
 function NameFilter() {
-  const { setFilterByName } = useContext(StarWarsContext);
+  const { filterByNumericValues } = useContext(StarWarsContext);
   const [name, nameInput] = useInput({
     type: 'text', list: null, testid: 'name-filter', initial: '' });
-  useEffect(() => {
-    setFilterByName({ filterByName: { name } });
-  }, [name, setFilterByName]);
+  useEffect(() => { filterByName(name); }, [filterByName, name]);
   return (
     <form>
-      Pesquise pelo nome
-      { '' }
-      { nameInput }
     </form>
   );
 }

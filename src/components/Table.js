@@ -1,9 +1,12 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import StarWarsContext from '../context/StarWarsContext';
 
 function Table() {
-  const { filteredData, getData } = useContext(StarWarsContext);
-  useEffect(() => { getData(); }, [getData]);
+  const { filteredData, data } = useContext(StarWarsContext);
+  const [planetList, setPlanetList] = useState([]);
+  useEffect(() => {
+    setPlanetList(filteredData.length > 0 ? filteredData : data);
+  }, [data, filteredData]);
   return (
     <table>
       <thead>
@@ -24,7 +27,7 @@ function Table() {
         </tr>
       </thead>
       <tbody>
-        {filteredData && filteredData.map((planet) => (
+        {planetList.map((planet) => (
           <tr key={ planet.name }>
             <td>{ planet.name }</td>
             <td>{ planet.rotation_period }</td>

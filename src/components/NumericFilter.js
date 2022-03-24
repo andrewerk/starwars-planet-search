@@ -3,7 +3,7 @@ import StarWarsContext from '../context/StarWarsContext';
 import useInput from '../hooks/useInput';
 
 function NumericFilter() {
-  const { applyNumericFilter, filterByNumericValues } = useContext(StarWarsContext);
+  const { filterByNumericValues, setFilterByNumericValues } = useContext(StarWarsContext);
   const options = [
     'population',
     'orbital_period',
@@ -27,13 +27,17 @@ function NumericFilter() {
   const [value, valueInput] = useInput({
     type: 'number', list: null, testid: 'value-filter', initial: 0 });
 
-  // handleButton = () => {
-  //   applyNumericFilter('add', {
-  //     column,
-  //     comparison,
-  //     value,
-  //   });
-  // };
+  const handleButton = () => {
+    setFilterByNumericValues((prevState) => (
+      [...prevState,
+        {
+          column,
+          comparison,
+          value,
+        },
+      ]
+    ));
+  };
 
   return (
     <form>
@@ -44,11 +48,7 @@ function NumericFilter() {
       { valueInput }
       <button
         type="button"
-        onClick={ () => applyNumericFilter('add', {
-          column,
-          comparison,
-          value,
-        }) }
+        onClick={ handleButton }
         data-testid="button-filter"
       >
         Filtrar

@@ -1,108 +1,72 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import StarWarsContext from './StarWarsContext';
 
-class StarWarsProvider extends React.Component {
-  state = {
-    data: [],
-    filterByName: {
-      name: '',
-    },
-    filteredData: [],
-    filterByNumericValues: [],
-  }
+function StarWarsProvider({ children }) {
+  const [data, setData] = useState([]);
+  const [filterByName, setFilterByName] = useState({ filterByName: { name: '' } });
+  const [filterByNumericValues, setFilterByNumericValues] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
 
-  getData = async () => {
-    const url = 'https://swapi-trybe.herokuapp.com/api/planets/';
-    const response = await fetch(url);
-    const planets = await response.json();
-    this.setState({ data: planets.results, filteredData: planets.results });
-  };
+  useEffect(() => {
+    async function fetchData() {
+      const url = 'https://swapi-trybe.herokuapp.com/api/planets/';
+      const response = await fetch(url);
+      const planets = await response.json();
+      setData(planets.results);
+    }
+    fetchData();
+  }, []);
 
-  filterByName = (text) => {
-    this.setState({ filterByName: { name: text } });
-    const { data, filteredData, filterByNumericValues } = this.state;
-    const newData = (filterByNumericValues
-      ? filteredData : data).filter(({ name }) => name.includes(text));
-    if (text !== '') {
-      this.setState({ filteredData: newData });
+  useEffect(() => {
+    if (filterByName.filterByName.name !== '') {
+      const newData = data.filter(({ name }) => name.toLowerCase()
+        .includes(filterByName.filterByName.name.toLowerCase()));
+      setFilteredData(newData);
+      console.log(filterByName.filterByName.name, newData);
     } else {
-      this.setState({ filteredData: data });
+      setFilteredData(data);
     }
-  }
+  },
+  [filterByName, data]);
 
-  // changeNumericFilter = (type, { column, comparison, value }) => {
-  //   if (type === 'add') {
-  //     this.setState((prevState) => ({
-  //       ...prevState,
-  //       filterByNumericValues:
-  //       [
-  //         ...prevState.filterByNumericValues,
-  //         {
-  //           column,
-  //           comparison,
-  //           value,
-  //         },
-  //       ],
-  //     }
-  //     ));
-  //   }
-  // }
-
-  applyNumericFilter = (type, { column, comparison, value }) => {
-    if (type === 'add') {
-      this.setState((prevState) => ({
-        ...prevState,
-        filterByNumericValues:
-        [
-          ...prevState.filterByNumericValues,
-          {
-            column,
-            comparison,
-            value,
-          },
-        ],
-      }), () => {
-        const { filterByName: name, filterByNumericValues } = this.state;
-        if (filterByNumericValues.length > 0) {
-          const { filteredData } = this.state;
-          const newfilteredData = filteredData.filter((planet) => filterByNumericValues
-            .every((filter) => {
-              if ((filter.comparison === 'maior que'
-              && filter.value < Number(planet[filter.column]))
-              || (filter.comparison === 'menor que'
-              && filter.value > Number(planet[filter.column]))
-              || (filter.comparison === 'igual a'
-              && Number(filter.value) === Number(planet[filter.column]))) {
-                return true;
-              }
-              return false;
-            }));
-          this.setState({ filteredData: newfilteredData }, this.filterByName(name));
-        }
-      });
+  useEffect(() => {
+    if (filterByNumericValues.length > 0) {
+      const newfilteredData = data.filter((planet) => filterByNumericValues
+        .every((filter) => {
+          if ((filter.comparison === 'maior que'
+            && filter.value < Number(planet[filter.column]))
+            || (filter.comparison === 'menor que'
+            && filter.value > Number(planet[filter.column]))
+            || (filter.comparison === 'igual a'
+            && Number(filter.value) === Number(planet[filter.column]))) {
+            return true;
+          }
+          return false;
+        }));
+      setFilteredData(newfilteredData);
+    } else {
+      setFilteredData(data);
     }
-  }
+  }, [data, filterByNumericValues]);
 
-  render() {
-    const { children } = this.props;
-    return (
-      <StarWarsContext.Provider
-        value={ {
-          ...this.state,
-          getData: this.getData,
-          filterByName: this.filterByName,
-          changeNumericFilter: this.changeNumericFilter,
-          applyNumericFilter: this.applyNumericFilter } }
-      >
-        { children }
-      </StarWarsContext.Provider>
-    );
-  }
+  return (
+    <StarWarsContext.Provider
+      value={ {
+        filteredData,
+        data,
+        setFilterByName,
+        filterByNumericValues,
+        setFilterByNumericValues,
+
+      } }
+    >
+      { children }
+    </StarWarsContext.Provider>
+  );
 }
 
 StarWarsProvider.propTypes = {
   children: PropTypes.node.isRequired,
 };
-
 export default StarWarsProvider;
