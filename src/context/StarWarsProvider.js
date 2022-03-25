@@ -57,6 +57,17 @@ function StarWarsProvider({ children }) {
     setFilterByNumericValues(newNumericFilter);
   };
 
+  const orderPlanets = (column, sort) => {
+    if (sort === 'DESC') {
+      (filteredData.length > 0 ? filteredData : data).sort((a, b) => (
+        Number(b[column]) - Number(a[column])));
+    }
+    if (sort === 'ASC') {
+      (filteredData.length > 0 ? filteredData : data).sort((b, a) => (
+        Number(b[column]) - Number(a[column])));
+    }
+  };
+
   return (
     <StarWarsContext.Provider
       value={ {
@@ -66,6 +77,7 @@ function StarWarsProvider({ children }) {
         filterByNumericValues,
         setFilterByNumericValues,
         removeFilter,
+        orderPlanets,
 
       } }
     >
