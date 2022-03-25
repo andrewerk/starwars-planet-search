@@ -13,7 +13,13 @@ function StarWarsProvider({ children }) {
       const url = 'https://swapi-trybe.herokuapp.com/api/planets/';
       const response = await fetch(url);
       const planets = await response.json();
-      setData(planets.results);
+      const planetsSorted = [...planets.results].sort((a, b) => {
+        const negativ = -1;
+        if (a.name < b.name) { return negativ; }
+        if (a.name > b.name) { return 1; }
+        return 0;
+      });
+      setData(planetsSorted);
     }
     fetchData();
   }, []);
@@ -56,18 +62,19 @@ function StarWarsProvider({ children }) {
     setFilterByNumericValues(newNumericFilter);
   };
 
-  // const orderPlanets = (column, sort) => {
-  //   if (sort === 'DESC') {
-  //     data.sort((a, b) => (
-  //       Number(b[column]) - Number(a[column])));
-  //     setFilteredData(data);
-  //   }
-  //   if (sort === 'ASC') {
-  //     data.sort((b, a) => (
-  //       Number(b[column]) - Number(a[column])));
-  //     setFilteredData(data);
-  //   }
-  // };
+  const orderPlanets = (column, sort) => {
+    const negativ = -1;
+    if (sort === 'DESC') {
+      const sorted = [...data].sort((a, b) => (
+        b[column] === 'unknown' ? negativ : Number(b[column]) - Number(a[column])));
+      setFilteredData(sorted);
+    }
+    if (sort === 'ASC') {
+      const sorted = [...data].sort((a, b) => (
+        b[column] === 'unknown' ? negativ : Number(a[column]) - Number(b[column])));
+      setFilteredData(sorted);
+    }
+  };
 
   return (
     <StarWarsContext.Provider
@@ -78,7 +85,7 @@ function StarWarsProvider({ children }) {
         filterByNumericValues,
         setFilterByNumericValues,
         removeFilter,
-        // orderPlanets,
+        orderPlanets,
 
       } }
     >

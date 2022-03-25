@@ -14,11 +14,7 @@ function SortFilter() {
   ];
 
   const [column, columnInput] = useInput({
-    type: 'select', list: options, testid: 'column-filter', initial: 'population' });
-
-  const handleButton = () => {
-    orderPlanets(column, sort);
-  };
+    type: 'select', list: options, testid: 'column-sort', initial: 'population' });
 
   return (
     <form>
@@ -35,6 +31,7 @@ function SortFilter() {
           name="sort"
           value="ASC"
           checked={ sort === 'ASC' }
+          data-testid="column-sort-input-asc"
           onChange={ () => setSort('ASC') }
         />
       </label>
@@ -48,13 +45,14 @@ function SortFilter() {
           name="sort"
           value="DESC"
           checked={ sort === 'DESC' }
+          data-testid="column-sort-input-desc"
           onChange={ () => setSort('DESC') }
         />
       </label>
       <button
         type="button"
-        onClick={ handleButton }
-        data-testid="button-filter"
+        onClick={ () => orderPlanets(column, sort) }
+        data-testid="column-sort-button"
       >
         Filtrar
       </button>
