@@ -23,7 +23,6 @@ function StarWarsProvider({ children }) {
       const newData = data.filter(({ name }) => name.toLowerCase()
         .includes(filterByName.filterByName.name.toLowerCase()));
       setFilteredData(newData);
-      console.log(filterByName.filterByName.name, newData);
     } else {
       setFilteredData(data);
     }
@@ -57,16 +56,18 @@ function StarWarsProvider({ children }) {
     setFilterByNumericValues(newNumericFilter);
   };
 
-  const orderPlanets = (column, sort) => {
-    if (sort === 'DESC') {
-      (filteredData.length > 0 ? filteredData : data).sort((a, b) => (
-        Number(b[column]) - Number(a[column])));
-    }
-    if (sort === 'ASC') {
-      (filteredData.length > 0 ? filteredData : data).sort((b, a) => (
-        Number(b[column]) - Number(a[column])));
-    }
-  };
+  // const orderPlanets = (column, sort) => {
+  //   if (sort === 'DESC') {
+  //     data.sort((a, b) => (
+  //       Number(b[column]) - Number(a[column])));
+  //     setFilteredData(data);
+  //   }
+  //   if (sort === 'ASC') {
+  //     data.sort((b, a) => (
+  //       Number(b[column]) - Number(a[column])));
+  //     setFilteredData(data);
+  //   }
+  // };
 
   return (
     <StarWarsContext.Provider
@@ -77,7 +78,7 @@ function StarWarsProvider({ children }) {
         filterByNumericValues,
         setFilterByNumericValues,
         removeFilter,
-        orderPlanets,
+        // orderPlanets,
 
       } }
     >
