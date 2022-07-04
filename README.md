@@ -8,7 +8,7 @@ The project was build using mostly JavaScript and React. The goal was also not t
 # Prototype Deploy
 
 This project prototype without stylization was deployed into Heroku, and can be accessed throught this URL:
-https://starwars-planets-search-2155.herokuapp.com/
+https://starwars-planets-search.herokuapp.com/
 
 # Running locally
 
